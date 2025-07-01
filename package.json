@@ -1,0 +1,16 @@
+{
+  "name": "telegram-ai-bot",
+  "version": "1.0.0",
+  "description": "A Telegram bot powered by your custom API endpoint",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.58.0",
+    "axios": "^1.6.7",
+    "dotenv": "^16.5.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
