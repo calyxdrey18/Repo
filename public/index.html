@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech WhatsApp Groups</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Tech WhatsApp Groups</h1>
+    <p class="subtitle">Connect, share, and grow with tech communities</p>
+
+    <form id="groupForm">
+      <div>
+        <label for="username">Your Username</label>
+        <input type="text" id="username" placeholder="Your name or handle" required>
+      </div>
+      <div>
+        <label for="groupName">Group Name</label>
+        <input type="text" id="groupName" placeholder="Tech Talk" required>
+      </div>
+      <div>
+        <label for="groupLink">WhatsApp Group Link</label>
+        <input type="url" id="groupLink" placeholder="https://chat.whatsapp.com/..." required>
+      </div>
+      <div class="file-input-wrapper">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <span>Click or drag & drop to upload a photo (optional)</span>
+        <input type="file" id="groupImage" accept="image/*">
+      </div>
+      <img id="previewImg" alt="Image preview">
+
+      <button type="submit">Submit</button>
+      <div id="formMsg"></div>
+    </form>
+
+    <div class="search-container">
+      <input type="search" id="searchInput" placeholder="Search groups...">
+      <i class="fas fa-search"></i>
+    </div>
+
+    <section class="groups-container" id="groupList"></section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
