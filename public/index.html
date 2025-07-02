@@ -3,335 +3,226 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GroupShare by Calyx-Drey Hacker</title>
+  <title>CALYX-DREY :: Secure Comms</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #6c5ce7;
-      --primary-dark: #5649c0;
-      --secondary: #00cec9;
-      --accent: #fd79a8;
-      --dark: #2d3436;
-      --darker: #1e272e;
-      --light: #f5f6fa;
-      --success: #00b894;
-      --error: #d63031;
-      --glass: rgba(255, 255, 255, 0.1);
-      --glass-border: rgba(255, 255, 255, 0.2);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      --matrix-green: #0aff0a;
+      --neon-purple: #bc13fe;
+      --hacker-red: #ff0038;
+      --darkest: #000000;
+      --darker: #0a0a0a;
+      --dark: #111111;
+      --glow: 0 0 10px var(--matrix-green);
     }
 
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, var(--darker), var(--dark));
-      color: var(--light);
-      min-height: 100vh;
-      overflow-x: hidden;
+      background-color: var(--darkest);
+      color: var(--matrix-green);
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+      line-height: 1.6;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 500px;
       margin: 0 auto;
-      padding: 2rem;
+      background-color: var(--darker);
+      border: 1px solid var(--matrix-green);
+      padding: 30px;
+      box-shadow: var(--glow);
     }
 
-    header {
+    h1 {
+      font-size: 2rem;
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 10px;
+      text-shadow: var(--glow);
     }
 
-    .logo {
-      font-size: 3rem;
-      font-weight: 700;
-      background: linear-gradient(45deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 0.5rem;
+    .subtitle {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--neon-purple);
     }
 
-    .creator {
-      color: var(--secondary);
-      margin-bottom: 1.5rem;
-    }
-
-    .creator span {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .main-content {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;
-      gap: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    @media (max-width: 900px) {
-      .main-content {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .form-section {
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 2rem;
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--shadow);
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
     .form-group {
-      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: var(--secondary);
-      font-weight: 500;
+    label {
+      font-weight: bold;
+      color: var(--matrix-green);
     }
 
-    .form-control {
-      width: 100%;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      color: var(--light);
-      font-family: 'Poppins', sans-serif;
-      font-size: 1rem;
-      transition: var(--transition);
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
+    input[type="text"],
+    input[type="url"] {
+      padding: 12px;
+      background: var(--dark);
+      border: 1px solid var(--matrix-green);
+      color: var(--matrix-green);
+      font-family: 'Courier New', monospace;
     }
 
     .file-upload {
-      border: 2px dashed var(--glass-border);
-      border-radius: 10px;
-      padding: 2rem;
+      border: 2px dashed var(--matrix-green);
+      padding: 20px;
       text-align: center;
       cursor: pointer;
-      transition: var(--transition);
-      margin-bottom: 1rem;
+      margin: 15px 0;
     }
 
     .file-upload:hover {
-      border-color: var(--primary);
-      background: rgba(108, 92, 231, 0.1);
+      background: rgba(10, 255, 10, 0.1);
     }
 
-    #previewImg {
-      max-width: 150px;
-      max-height: 150px;
-      border-radius: 10px;
-      margin: 1rem auto;
-      display: block;
-      border: 2px solid var(--glass-border);
-    }
-
-    .btn {
-      display: inline-block;
-      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
-      color: white;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-weight: 600;
+    button {
+      padding: 15px;
+      background: var(--dark);
+      border: 1px solid var(--matrix-green);
+      color: var(--matrix-green);
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
       cursor: pointer;
-      transition: var(--transition);
-      width: 100%;
-      text-align: center;
+      transition: all 0.3s;
     }
 
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+    button:hover {
+      background: var(--matrix-green);
+      color: var(--darkest);
+      box-shadow: var(--glow);
+    }
+
+    #formMsg {
+      text-align: center;
+      margin: 15px 0;
+      padding: 10px;
+    }
+
+    .success {
+      color: var(--matrix-green);
+      border: 1px solid var(--matrix-green);
+    }
+
+    .error {
+      color: var(--hacker-red);
+      border: 1px solid var(--hacker-red);
     }
 
     .search-container {
+      margin: 30px 0;
       position: relative;
-      margin-bottom: 2rem;
     }
 
     .search-container input {
       width: 100%;
-      padding: 1rem 3rem 1rem 1.5rem;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--glass-border);
-      border-radius: 50px;
-      color: var(--light);
-      font-size: 1rem;
+      padding: 12px 40px 12px 15px;
     }
 
     .search-container i {
       position: absolute;
-      right: 1.5rem;
+      right: 15px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--secondary);
-    }
-
-    .groups-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
     }
 
     .group-card {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 15px;
-      overflow: hidden;
-      border: 1px solid var(--glass-border);
-      transition: var(--transition);
-    }
-
-    .group-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    .group-img {
-      height: 180px;
-      overflow: hidden;
-    }
-
-    .group-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: var(--transition);
-    }
-
-    .group-card:hover .group-img img {
-      transform: scale(1.1);
-    }
-
-    .group-info {
-      padding: 1.5rem;
+      background: var(--dark);
+      border: 1px solid var(--matrix-green);
+      padding: 20px;
+      margin-bottom: 20px;
     }
 
     .group-name {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--light);
-      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 5px;
     }
 
     .group-user {
-      font-size: 0.9rem;
-      color: var(--secondary);
-      margin-bottom: 1rem;
+      color: var(--neon-purple);
+      margin-bottom: 15px;
+      font-style: italic;
     }
 
     .group-link {
       display: block;
+      padding: 10px;
+      background: var(--darker);
+      border: 1px solid var(--matrix-green);
+      color: var(--matrix-green);
       text-align: center;
-      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
-      color: white;
-      padding: 0.8rem;
-      border-radius: 8px;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: bold;
     }
 
-    .message {
-      padding: 1rem;
-      border-radius: 10px;
-      margin: 1rem 0;
-      text-align: center;
+    .group-link:hover {
+      background: var(--matrix-green);
+      color: var(--darkest);
     }
 
-    .success {
-      background: rgba(0, 184, 148, 0.2);
-      color: var(--success);
-      border: 1px solid var(--success);
-    }
-
-    .error {
-      background: rgba(214, 48, 49, 0.2);
-      color: var(--error);
-      border: 1px solid var(--error);
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      color: var(--light);
-      opacity: 0.7;
+    #previewImg {
+      max-width: 100px;
+      max-height: 100px;
+      margin: 10px auto;
+      display: block;
+      border: 1px solid var(--matrix-green);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1 class="logo">GroupShare</h1>
-      <p class="creator">Created by <span>Calyx-Drey Hacker</span></p>
-    </header>
+    <h1>Tech WhatsApp Groups</h1>
+    <p class="subtitle">Connect, share, and grow with tech communities</p>
 
-    <div class="main-content">
-      <div class="form-section">
-        <form id="groupForm" enctype="multipart/form-data">
-          <div class="form-group">
-            <label for="username">Your Name</label>
-            <input type="text" id="username" class="form-control" placeholder="Enter your name" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="groupName">Group Name</label>
-            <input type="text" id="groupName" class="form-control" placeholder="Tech enthusiasts" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="groupLink">WhatsApp Link</label>
-            <input type="url" id="groupLink" class="form-control" placeholder="https://chat.whatsapp.com/..." required>
-          </div>
-          
-          <div class="file-upload" id="fileUpload">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <span>Click to upload group image</span>
-            <input type="file" id="groupImage" name="groupImage" accept="image/*" style="display: none;">
-          </div>
-          
-          <img id="previewImg" style="display: none;">
-          
-          <button type="submit" class="btn">
-            <i class="fas fa-paper-plane"></i> Share Group
-          </button>
-          
-          <div id="formMsg" class="message"></div>
-        </form>
+    <form id="groupForm">
+      <div class="form-group">
+        <label>Your Username</label>
+        <input type="text" id="username" placeholder="Your name or handle" required>
       </div>
 
-      <div class="groups-section">
-        <div class="search-container">
-          <input type="search" id="searchInput" placeholder="Search groups...">
-          <i class="fas fa-search"></i>
-        </div>
-        
-        <div class="groups-container" id="groupList">
-          <!-- Groups will be loaded here -->
-        </div>
+      <div class="form-group">
+        <label>Group Name</label>
+        <input type="text" id="groupName" placeholder="Tech Talk" required>
       </div>
+
+      <div class="form-group">
+        <label>WhatsApp Group Link</label>
+        <input type="url" id="groupLink" placeholder="https://chat.whatsapp.com/..." required>
+      </div>
+
+      <div class="file-upload">
+        <label>Click or drag & drop to upload a photo (optional)</label>
+        <input type="file" id="groupImage" accept="image/*" style="display: none;">
+        <img id="previewImg" style="display: none;">
+      </div>
+
+      <button type="submit">Submit</button>
+      <div id="formMsg"></div>
+    </form>
+
+    <div class="search-container">
+      <input type="search" id="searchInput" placeholder="Search groups...">
+      <i class="fas fa-search"></i>
     </div>
 
-    <footer>
-      &copy; 2023 GroupShare | Created by Calyx-Drey Hacker
-    </footer>
+    <div id="groupList">
+      <!-- Groups will be loaded here -->
+    </div>
   </div>
 
   <script>
@@ -342,9 +233,13 @@
       const formMsg = document.getElementById('formMsg');
       const groupImageInput = document.getElementById('groupImage');
       const previewImg = document.getElementById('previewImg');
-      const fileUpload = document.getElementById('fileUpload');
+      const fileUpload = document.querySelector('.file-upload');
 
-      // Image preview handler
+      // File upload handling
+      fileUpload.addEventListener('click', () => {
+        groupImageInput.click();
+      });
+
       groupImageInput.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
           const file = e.target.files[0];
@@ -353,65 +248,50 @@
           reader.onload = (event) => {
             previewImg.src = event.target.result;
             previewImg.style.display = 'block';
-            fileUpload.innerHTML = '<i class="fas fa-check-circle"></i> Image selected';
           };
           
           reader.readAsDataURL(file);
         }
       });
 
-      // Click on file upload area
-      fileUpload.addEventListener('click', () => {
-        groupImageInput.click();
-      });
-
       // Form submission
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        formMsg.textContent = '';
-        formMsg.className = '';
         
         const username = document.getElementById('username').value.trim();
         const groupName = document.getElementById('groupName').value.trim();
         const groupLink = document.getElementById('groupLink').value.trim();
-        const imageFile = groupImageInput.files[0];
+        const imagePath = previewImg.src || '';
 
-        // Validate required fields
         if (!username || !groupName || !groupLink) {
-          showMessage('Please fill all required fields', 'error');
-          return;
-        }
-
-        // Validate WhatsApp link format
-        if (!groupLink.startsWith('https://chat.whatsapp.com/')) {
-          showMessage('Please enter a valid WhatsApp group link', 'error');
+          showMessage('All fields are required', 'error');
           return;
         }
 
         try {
-          const formData = new FormData();
-          formData.append('username', username);
-          formData.append('groupName', groupName);
-          formData.append('groupLink', groupLink);
-          if (imageFile) {
-            formData.append('groupImage', imageFile);
-          }
-
           const response = await fetch('/api/groups', {
             method: 'POST',
-            body: formData
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              username,
+              groupName,
+              groupLink,
+              imagePath
+            })
           });
 
           const result = await response.json();
 
           if (response.ok) {
-            showMessage('Group shared successfully!', 'success');
+            showMessage('Group added successfully!', 'success');
             form.reset();
             previewImg.style.display = 'none';
-            fileUpload.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Click to upload group image';
+            groupImageInput.value = '';
             loadGroups();
           } else {
-            showMessage(result.error || 'Failed to share group', 'error');
+            showMessage(result.error || 'Failed to add group', 'error');
           }
         } catch (error) {
           showMessage('Network error. Please try again.', 'error');
@@ -423,16 +303,16 @@
         loadGroups(searchInput.value.trim());
       });
 
-      // Load groups from server
+      // Load groups
       async function loadGroups(search = '') {
-        groupList.innerHTML = '<div class="message">Loading groups...</div>';
+        groupList.innerHTML = 'Loading...';
         
         try {
-          const response = await fetch(`/api/groups?q=${encodeURIComponent(search)}`);
+          const response = await fetch(`/api/groups${search ? '?q=' + encodeURIComponent(search) : ''}`);
           const groups = await response.json();
 
           if (groups.length === 0) {
-            groupList.innerHTML = '<div class="message">No groups found</div>';
+            groupList.innerHTML = 'No groups found';
             return;
           }
 
@@ -441,29 +321,28 @@
             const card = document.createElement('div');
             card.className = 'group-card';
             card.innerHTML = `
-              <div class="group-img">
-                <img src="${group.imagePath || 'https://via.placeholder.com/300x180?text=No+Image'}" alt="${group.groupName}">
-              </div>
-              <div class="group-info">
-                <div class="group-name">${escapeHtml(group.groupName)}</div>
-                <div class="group-user">Shared by: ${escapeHtml(group.username)}</div>
-                <a href="${escapeHtml(group.groupLink)}" class="group-link" target="_blank">
-                  <i class="fas fa-users"></i> Join Group
-                </a>
-              </div>
+              <div class="group-name">${escapeHtml(group.groupName)}</div>
+              <div class="group-user">Shared by: ${escapeHtml(group.username)}</div>
+              <a href="${escapeHtml(group.groupLink)}" class="group-link" target="_blank">Join Group</a>
             `;
             groupList.appendChild(card);
           });
         } catch (error) {
-          groupList.innerHTML = '<div class="message error">Failed to load groups</div>';
+          groupList.innerHTML = 'Failed to load groups';
         }
       }
 
       // Helper functions
       function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        return text.replace(/[&<>"']/g, function(m) {
+          return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          }[m];
+        });
       }
 
       function showMessage(msg, type) {
@@ -476,4 +355,4 @@
     });
   </script>
 </body>
-  </html>
+</html>
