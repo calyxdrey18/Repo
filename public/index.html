@@ -3,17 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CALYX-DREY :: Secure Comms</title>
+  <title>Tech WhatsApp Groups | Connect & Share</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --matrix-green: #0aff0a;
-      --neon-purple: #bc13fe;
-      --hacker-red: #ff0038;
-      --darkest: #000000;
-      --darker: #0a0a0a;
-      --dark: #111111;
-      --glow: 0 0 10px var(--matrix-green);
+      --primary: #4361ee;
+      --primary-light: #4895ef;
+      --secondary: #3f37c9;
+      --accent: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --success: #4cc9f0;
+      --error: #f72585;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
     }
 
     * {
@@ -23,39 +28,54 @@
     }
 
     body {
-      background-color: var(--darkest);
-      color: var(--matrix-green);
-      font-family: 'Courier New', monospace;
-      padding: 20px;
+      background-color: #f5f7ff;
+      color: var(--dark);
+      font-family: 'Inter', sans-serif;
       line-height: 1.6;
+      padding: 0;
     }
 
     .container {
-      max-width: 500px;
+      max-width: 800px;
       margin: 0 auto;
-      background-color: var(--darker);
-      border: 1px solid var(--matrix-green);
-      padding: 30px;
-      box-shadow: var(--glow);
+      background-color: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      margin-top: 40px;
+      margin-bottom: 40px;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
       text-align: center;
       margin-bottom: 10px;
-      text-shadow: var(--glow);
+      color: var(--primary);
+      font-weight: 700;
     }
 
     .subtitle {
       text-align: center;
-      margin-bottom: 30px;
-      color: var(--neon-purple);
+      margin-bottom: 40px;
+      color: var(--gray);
+      font-size: 1.1rem;
+      font-weight: 400;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
     }
 
     .form-group {
@@ -65,158 +85,285 @@
     }
 
     label {
-      font-weight: bold;
-      color: var(--matrix-green);
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 0.95rem;
     }
 
     input[type="text"],
-    input[type="url"] {
-      padding: 12px;
-      background: var(--dark);
-      border: 1px solid var(--matrix-green);
-      color: var(--matrix-green);
-      font-family: 'Courier New', monospace;
+    input[type="url"],
+    input[type="search"] {
+      padding: 14px 16px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      color: var(--dark);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    input[type="text"]:focus,
+    input[type="url"]:focus,
+    input[type="search"]:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
     }
 
     .file-upload {
-      border: 2px dashed var(--matrix-green);
-      padding: 20px;
+      border: 2px dashed #e0e0e0;
+      border-radius: 8px;
+      padding: 30px;
       text-align: center;
       cursor: pointer;
-      margin: 15px 0;
+      margin: 20px 0;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
     }
 
     .file-upload:hover {
-      background: rgba(10, 255, 10, 0.1);
+      border-color: var(--primary-light);
+      background: rgba(67, 97, 238, 0.03);
+    }
+
+    .file-upload::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(67, 97, 238, 0.1), transparent);
+      transition: var(--transition);
+    }
+
+    .file-upload:hover::after {
+      left: 100%;
     }
 
     button {
-      padding: 15px;
-      background: var(--dark);
-      border: 1px solid var(--matrix-green);
-      color: var(--matrix-green);
-      font-family: 'Courier New', monospace;
-      font-weight: bold;
+      padding: 16px;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     button:hover {
-      background: var(--matrix-green);
-      color: var(--darkest);
-      box-shadow: var(--glow);
+      background: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(67, 97, 238, 0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     #formMsg {
       text-align: center;
-      margin: 15px 0;
-      padding: 10px;
+      margin: 20px 0;
+      padding: 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      animation: fadeIn 0.4s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .success {
-      color: var(--matrix-green);
-      border: 1px solid var(--matrix-green);
+      color: #166534;
+      background-color: #dcfce7;
+      border: 1px solid #bbf7d0;
     }
 
     .error {
-      color: var(--hacker-red);
-      border: 1px solid var(--hacker-red);
+      color: #991b1b;
+      background-color: #fee2e2;
+      border: 1px solid #fecaca;
     }
 
     .search-container {
-      margin: 30px 0;
+      margin: 40px 0;
       position: relative;
     }
 
     .search-container input {
       width: 100%;
-      padding: 12px 40px 12px 15px;
+      padding: 14px 50px 14px 20px;
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      border: none;
     }
 
     .search-container i {
       position: absolute;
-      right: 15px;
+      right: 20px;
       top: 50%;
       transform: translateY(-50%);
+      color: var(--gray);
     }
 
     .group-card {
-      background: var(--dark);
-      border: 1px solid var(--matrix-green);
-      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
       margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      transform-origin: top;
+      animation: cardAppear 0.5s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes cardAppear {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .group-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
 
     .group-name {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 5px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--primary);
     }
 
     .group-user {
-      color: var(--neon-purple);
-      margin-bottom: 15px;
-      font-style: italic;
+      color: var(--gray);
+      margin-bottom: 20px;
+      font-size: 0.9rem;
     }
 
     .group-link {
       display: block;
-      padding: 10px;
-      background: var(--darker);
-      border: 1px solid var(--matrix-green);
-      color: var(--matrix-green);
+      padding: 12px;
+      background: var(--primary);
+      border-radius: 8px;
+      color: white;
       text-align: center;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
+      transition: var(--transition);
     }
 
     .group-link:hover {
-      background: var(--matrix-green);
-      color: var(--darkest);
+      background: var(--secondary);
     }
 
     #previewImg {
-      max-width: 100px;
-      max-height: 100px;
-      margin: 10px auto;
+      max-width: 120px;
+      max-height: 120px;
+      margin: 15px auto;
       display: block;
-      border: 1px solid var(--matrix-green);
+      border-radius: 8px;
+      object-fit: cover;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.5s;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .header-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-radius: 0;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .subtitle {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="header-icon" style="text-align: center;">
+      <i class="fas fa-users"></i>
+    </div>
     <h1>Tech WhatsApp Groups</h1>
-    <p class="subtitle">Connect, share, and grow with tech communities</p>
+    <p class="subtitle">Connect with like-minded tech enthusiasts and grow your network</p>
 
     <form id="groupForm">
       <div class="form-group">
-        <label>Your Username</label>
+        <label for="username">Your Username</label>
         <input type="text" id="username" placeholder="Your name or handle" required>
       </div>
 
       <div class="form-group">
-        <label>Group Name</label>
-        <input type="text" id="groupName" placeholder="Tech Talk" required>
+        <label for="groupName">Group Name</label>
+        <input type="text" id="groupName" placeholder="e.g. React Developers" required>
       </div>
 
       <div class="form-group">
-        <label>WhatsApp Group Link</label>
+        <label for="groupLink">WhatsApp Group Link</label>
         <input type="url" id="groupLink" placeholder="https://chat.whatsapp.com/..." required>
       </div>
 
       <div class="file-upload">
-        <label>Click or drag & drop to upload a photo (optional)</label>
+        <label><i class="fas fa-cloud-upload-alt" style="margin-right: 8px;"></i>Click or drag & drop to upload a group photo (optional)</label>
         <input type="file" id="groupImage" accept="image/*" style="display: none;">
         <img id="previewImg" style="display: none;">
       </div>
 
-      <button type="submit">Submit</button>
+      <button type="submit" id="submitBtn">
+        <span id="btnText">Submit Group</span>
+        <span id="btnLoader" class="loading" style="display: none;"></span>
+      </button>
       <div id="formMsg"></div>
     </form>
 
     <div class="search-container">
-      <input type="search" id="searchInput" placeholder="Search groups...">
+      <input type="search" id="searchInput" placeholder="Search groups by name, topic or creator...">
       <i class="fas fa-search"></i>
     </div>
 
@@ -234,25 +381,58 @@
       const groupImageInput = document.getElementById('groupImage');
       const previewImg = document.getElementById('previewImg');
       const fileUpload = document.querySelector('.file-upload');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnLoader = document.getElementById('btnLoader');
 
-      // File upload handling
+      // Animate container on load
+      document.querySelector('.container').style.animation = 'fadeInUp 0.6s forwards';
+
+      // File upload handling with drag and drop
       fileUpload.addEventListener('click', () => {
         groupImageInput.click();
       });
 
-      groupImageInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          const file = e.target.files[0];
-          const reader = new FileReader();
-          
-          reader.onload = (event) => {
-            previewImg.src = event.target.result;
-            previewImg.style.display = 'block';
-          };
-          
-          reader.readAsDataURL(file);
+      // Drag and drop functionality
+      fileUpload.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUpload.style.borderColor = 'var(--primary)';
+        fileUpload.style.backgroundColor = 'rgba(67, 97, 238, 0.05)';
+      });
+
+      fileUpload.addEventListener('dragleave', () => {
+        fileUpload.style.borderColor = '#e0e0e0';
+        fileUpload.style.backgroundColor = '';
+      });
+
+      fileUpload.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUpload.style.borderColor = '#e0e0e0';
+        fileUpload.style.backgroundColor = '';
+        
+        if (e.dataTransfer.files.length) {
+          groupImageInput.files = e.dataTransfer.files;
+          handleImageUpload(e.dataTransfer.files[0]);
         }
       });
+
+      groupImageInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          handleImageUpload(e.target.files[0]);
+        }
+      });
+
+      function handleImageUpload(file) {
+        const reader = new FileReader();
+        
+        reader.onload = (event) => {
+          previewImg.src = event.target.result;
+          previewImg.style.display = 'block';
+          fileUpload.querySelector('label').textContent = file.name;
+        };
+        
+        reader.readAsDataURL(file);
+      }
 
       // Form submission
       form.addEventListener('submit', async (e) => {
@@ -264,9 +444,14 @@
         const imagePath = previewImg.src || '';
 
         if (!username || !groupName || !groupLink) {
-          showMessage('All fields are required', 'error');
+          showMessage('Please fill in all required fields', 'error');
           return;
         }
+
+        // Show loading state
+        btnText.style.display = 'none';
+        btnLoader.style.display = 'block';
+        submitBtn.disabled = true;
 
         try {
           const response = await fetch('/api/groups', {
@@ -289,46 +474,70 @@
             form.reset();
             previewImg.style.display = 'none';
             groupImageInput.value = '';
-            loadGroups();
+            fileUpload.querySelector('label').innerHTML = 
+              '<i class="fas fa-cloud-upload-alt" style="margin-right: 8px;"></i>Click or drag & drop to upload a group photo (optional)';
+            
+            // Animate the new card
+            loadGroups().then(() => {
+              const cards = document.querySelectorAll('.group-card');
+              const lastCard = cards[cards.length - 1];
+              if (lastCard) {
+                lastCard.style.animation = 'cardHighlight 1.5s';
+              }
+            });
           } else {
             showMessage(result.error || 'Failed to add group', 'error');
           }
         } catch (error) {
           showMessage('Network error. Please try again.', 'error');
+        } finally {
+          // Reset button state
+          btnText.style.display = 'block';
+          btnLoader.style.display = 'none';
+          submitBtn.disabled = false;
         }
       });
 
-      // Search functionality
+      // Search functionality with debounce
+      let searchTimeout;
       searchInput.addEventListener('input', () => {
-        loadGroups(searchInput.value.trim());
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          loadGroups(searchInput.value.trim());
+        }, 300);
       });
 
-      // Load groups
+      // Load groups with animation
       async function loadGroups(search = '') {
-        groupList.innerHTML = 'Loading...';
+        groupList.innerHTML = '<div style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i></div>';
         
         try {
           const response = await fetch(`/api/groups${search ? '?q=' + encodeURIComponent(search) : ''}`);
           const groups = await response.json();
 
           if (groups.length === 0) {
-            groupList.innerHTML = 'No groups found';
+            groupList.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--gray);">No groups found. Be the first to add one!</div>';
             return;
           }
 
           groupList.innerHTML = '';
-          groups.forEach(group => {
+          groups.forEach((group, index) => {
             const card = document.createElement('div');
             card.className = 'group-card';
             card.innerHTML = `
               <div class="group-name">${escapeHtml(group.groupName)}</div>
               <div class="group-user">Shared by: ${escapeHtml(group.username)}</div>
-              <a href="${escapeHtml(group.groupLink)}" class="group-link" target="_blank">Join Group</a>
+              <a href="${escapeHtml(group.groupLink)}" class="group-link" target="_blank">
+                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i>Join Group
+              </a>
             `;
             groupList.appendChild(card);
+            
+            // Stagger animations
+            card.style.animationDelay = `${index * 0.1}s`;
           });
         } catch (error) {
-          groupList.innerHTML = 'Failed to load groups';
+          groupList.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--error);">Failed to load groups. Please try again.</div>';
         }
       }
 
@@ -348,10 +557,28 @@
       function showMessage(msg, type) {
         formMsg.textContent = msg;
         formMsg.className = type;
+        formMsg.style.display = 'block';
+        
+        // Hide message after 5 seconds
+        setTimeout(() => {
+          formMsg.style.opacity = '1';
+          let opacity = 1;
+          const fadeOut = setInterval(() => {
+            opacity -= 0.1;
+            formMsg.style.opacity = opacity;
+            if (opacity <= 0) {
+              clearInterval(fadeOut);
+              formMsg.style.display = 'none';
+              formMsg.style.opacity = '1';
+            }
+          }, 100);
+        }, 5000);
       }
 
-      // Initial load
-      loadGroups();
+      // Initial load with animation
+      setTimeout(() => {
+        loadGroups();
+      }, 500);
     });
   </script>
 </body>
