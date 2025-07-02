@@ -7,18 +7,58 @@ const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_FILE = path.resolve(__dirname, 'data', 'groups.json');
 
-// Initialize data directory
+// Configure data paths
+const DATA_DIR = process.env.UPLOADS_DIR || path.join(__dirname, 'data');
+const DATA_FILE = process.env.DATA_PATH || path.join(DATA_DIR, 'groups.json');
+const BACKUP_DIR = path.join(DATA_DIR, 'backups');
+
+// Ensure data directory exists
 const initDataDirectory = () => {
-  const dir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, '[]', 'utf8');
+  try {
+    // Create main data directory if needed
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+      console.log(`Created data directory at ${DATA_DIR}`);
+    }
+
+    // Create backups directory
+    if (!fs.existsSync(BACKUP_DIR)) {
+      fs.mkdirSync(BACKUP_DIR, { recursive: true });
+      console.log(`Created backups directory at ${BACKUP_DIR}`);
+    }
+
+    // Initialize groups file if it doesn't exist
+    if (!fs.existsSync(DATA_FILE)) {
+      fs.writeFileSync(DATA_FILE, '[]', 'utf8');
+      console.log(`Created new data file at ${DATA_FILE}`);
+    }
+
+    // Verify we can write to the directory
+    fs.accessSync(DATA_DIR, fs.constants.W_OK);
+    console.log(`Data directory is writable: ${DATA_DIR}`);
+
+    // Create initial backup
+    createBackup();
+  } catch (err) {
+    console.error('Storage initialization failed:', err);
+    process.exit(1);
   }
 };
+
+// Backup function
+const createBackup = () => {
+  try {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupFile = path.join(BACKUP_DIR, `groups-${timestamp}.json`);
+    fs.copyFileSync(DATA_FILE, backupFile);
+    console.log(`Created backup: ${backupFile}`);
+  } catch (err) {
+    console.error('Backup failed:', err);
+  }
+};
+
+// Initialize data directory
 initDataDirectory();
 
 // Middleware
@@ -31,11 +71,10 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Helper functions
-const md5 = (str) => crypto.createHash('md5').update(str).digest('hex');
-
 const loadGroups = () => {
   try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+    const data = fs.readFileSync(DATA_FILE, 'utf8');
+    return JSON.parse(data);
   } catch (err) {
     console.error('Error loading groups:', err);
     return [];
@@ -45,6 +84,8 @@ const loadGroups = () => {
 const saveGroups = (groups) => {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(groups, null, 2), 'utf8');
+    createBackup(); // Create backup after each save
+    return true;
   } catch (err) {
     console.error('Error saving groups:', err);
     throw err;
@@ -54,7 +95,8 @@ const saveGroups = (groups) => {
 // API Endpoints
 app.get('/api/groups', (req, res) => {
   try {
-    res.json(loadGroups());
+    const groups = loadGroups();
+    res.json(groups);
   } catch (err) {
     res.status(500).json({ error: 'Failed to load groups' });
   }
@@ -78,8 +120,9 @@ app.post('/api/groups', (req, res) => {
       username: username.trim(),
       groupName: groupName.trim(),
       groupLink: groupLink.trim(),
-      imagePath: imagePath || `https://www.gravatar.com/avatar/${md5(groupName.trim())}?d=identicon&s=200`,
-      createdAt: new Date().toISOString()
+      imagePath: imagePath || `https://www.gravatar.com/avatar/${crypto.createHash('md5').update(groupName.trim()).digest('hex')}?d=identicon&s=200`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     
     groups.push(newGroup);
@@ -90,17 +133,17 @@ app.post('/api/groups', (req, res) => {
   }
 });
 
-app.get('/api/groups/search', (req, res) => {
+app.get('/api/health', (req, res) => {
   try {
-    const query = (req.query.q || '').toLowerCase().trim();
-    const groups = loadGroups();
-    res.json(query ? groups.filter(g => 
-      g.groupName.toLowerCase().includes(query) ||
-      g.username.toLowerCase().includes(query) ||
-      g.groupLink.toLowerCase().includes(query)
-    ) : groups);
+    // Verify we can read/write to the data directory
+    fs.accessSync(DATA_DIR, fs.constants.R_OK | fs.constants.W_OK);
+    res.json({ 
+      status: 'healthy',
+      dataFile: DATA_FILE,
+      diskSpace: fs.statSync(DATA_DIR).size
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Search failed' });
+    res.status(500).json({ status: 'unhealthy', error: err.message });
   }
 });
 
@@ -109,12 +152,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Server error');
-});
-
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Data file: ${DATA_FILE}`);
 });
