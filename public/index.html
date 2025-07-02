@@ -3,96 +3,136 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WhatsApp Groups Manager</title>
+  <title>WhatsApp Groups | Calyx-Drey Hacker</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --primary: #25D366;
       --primary-dark: #128C7E;
       --primary-darker: #075E54;
-      --light: #DCF8C6;
-      --text: #333;
+      --accent: #6e48aa;
+      --accent-dark: #4b2d7f;
+      --text: #2d3748;
       --text-light: #f8f8f8;
-      --bg: #f5f5f5;
+      --bg: #f7fafc;
       --card-bg: #ffffff;
-      --error: #e74c3c;
-      --success: #2ecc71;
-      --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      --error: #e53e3e;
+      --success: #38a169;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --glow: 0 0 10px rgba(110, 72, 170, 0.5);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.6;
+      min-height: 100vh;
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      padding: 2rem;
     }
 
     header {
       text-align: center;
-      margin-bottom: 30px;
-      padding: 20px 0;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .logo {
+      width: 50px;
+      height: 50px;
+      margin-right: 1rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5rem;
+      box-shadow: var(--glow);
     }
 
     h1 {
       color: var(--primary-darker);
-      margin-bottom: 10px;
       font-size: 2.5rem;
-    }
-
-    h1 i {
-      margin-right: 10px;
+      margin-bottom: 0.5rem;
     }
 
     .subtitle {
-      color: var(--primary-dark);
-      font-size: 1.2rem;
+      color: var(--accent-dark);
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .byline {
+      position: absolute;
+      right: 0;
+      top: 0;
+      background: linear-gradient(135deg, var(--accent), var(--primary-dark));
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      box-shadow: var(--shadow);
     }
 
     .form-section, .groups-section {
       background-color: var(--card-bg);
-      padding: 25px;
-      border-radius: 10px;
+      padding: 2rem;
+      border-radius: 12px;
       box-shadow: var(--shadow);
-      margin-bottom: 30px;
+      margin-bottom: 2rem;
     }
 
     h2 {
-      color: var(--primary-darker);
-      margin-bottom: 20px;
+      color: var(--accent-dark);
+      margin-bottom: 1.5rem;
       font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+    }
+
+    h2 i {
+      margin-right: 0.8rem;
+      color: var(--primary);
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 1.5rem;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 0.5rem;
       font-weight: 600;
       color: var(--primary-darker);
     }
 
     .form-group input {
       width: 100%;
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      padding: 0.8rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
       font-size: 1rem;
       transition: all 0.3s ease;
     }
@@ -100,15 +140,59 @@
     .form-group input:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.2);
+      box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+    }
+
+    .file-upload {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      border: 2px dashed #cbd5e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .file-upload:hover {
+      border-color: var(--primary);
+      background-color: rgba(37, 211, 102, 0.05);
+    }
+
+    .file-upload i {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .file-upload p {
+      color: #718096;
+      margin-bottom: 0.5rem;
+    }
+
+    .file-upload small {
+      color: #a0aec0;
+      font-size: 0.8rem;
+    }
+
+    .image-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin: 1rem auto;
+      display: block;
+      border: 2px solid #e2e8f0;
     }
 
     button {
-      background-color: var(--primary);
+      background: linear-gradient(135deg, var(--accent), var(--primary-dark));
       color: white;
       border: none;
-      padding: 12px 20px;
-      border-radius: 5px;
+      padding: 1rem;
+      border-radius: 8px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
@@ -117,11 +201,12 @@
       align-items: center;
       justify-content: center;
       width: 100%;
+      box-shadow: var(--shadow);
     }
 
     button:hover {
-      background-color: var(--primary-dark);
       transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
     button:active {
@@ -129,7 +214,7 @@
     }
 
     .spinner {
-      margin-left: 10px;
+      margin-left: 0.8rem;
       animation: spin 1s linear infinite;
     }
 
@@ -143,79 +228,87 @@
     }
 
     .message {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 5px;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 8px;
       text-align: center;
       font-weight: 500;
     }
 
     .error {
-      background-color: #fde8e8;
+      background-color: #fff5f5;
       color: var(--error);
-      border: 1px solid #f5c6cb;
+      border: 1px solid #fed7d7;
     }
 
     .success {
-      background-color: #e8fdf1;
+      background-color: #f0fff4;
       color: var(--success);
-      border: 1px solid #c3e6cb;
+      border: 1px solid #c6f6d5;
     }
 
     .search-box {
       position: relative;
-      margin-bottom: 20px;
+      margin-bottom: 1.5rem;
     }
 
     .search-box input {
       width: 100%;
-      padding: 12px 15px 12px 40px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      padding: 0.8rem 1rem 0.8rem 3rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
       font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(110, 72, 170, 0.2);
     }
 
     .search-box i {
       position: absolute;
-      left: 15px;
+      left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--primary-dark);
+      color: var(--accent);
     }
 
     .group-list {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      gap: 1.5rem;
     }
 
     .group-card {
       background-color: white;
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
       box-shadow: var(--shadow);
       transition: all 0.3s ease;
+      position: relative;
     }
 
     .group-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     }
 
     .group-image {
-      height: 160px;
-      background-color: var(--light);
+      height: 180px;
+      background-color: #edf2f7;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      position: relative;
     }
 
     .group-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s ease;
+      transition: transform 0.5s ease;
     }
 
     .group-card:hover .group-image img {
@@ -223,64 +316,87 @@
     }
 
     .group-info {
-      padding: 15px;
+      padding: 1.5rem;
     }
 
     .group-name {
       color: var(--primary-darker);
-      margin-bottom: 5px;
-      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      font-size: 1.3rem;
+      font-weight: 600;
     }
 
     .group-author {
-      color: #666;
+      color: #718096;
       font-size: 0.9rem;
-      margin-bottom: 15px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .group-author i {
+      margin-right: 0.5rem;
+      color: var(--accent);
     }
 
     .join-link {
-      display: inline-block;
-      background-color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--accent), var(--primary-dark));
       color: white;
-      padding: 8px 15px;
-      border-radius: 5px;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
       text-decoration: none;
       font-weight: 600;
       transition: all 0.3s ease;
+      width: 100%;
+      text-align: center;
     }
 
     .join-link:hover {
-      background-color: var(--primary-dark);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
     .join-link i {
-      margin-left: 5px;
+      margin-left: 0.5rem;
       font-size: 0.8rem;
     }
 
     .empty-state {
       text-align: center;
-      padding: 40px 20px;
-      color: #666;
+      padding: 3rem 2rem;
+      color: #718096;
       grid-column: 1 / -1;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .empty-state i {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
     }
 
     footer {
       text-align: center;
-      margin-top: auto;
-      padding: 20px 0;
-      color: var(--primary-dark);
+      margin-top: 3rem;
+      padding: 1.5rem;
+      color: var(--accent-dark);
       font-size: 0.9rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .brand-footer {
+      color: var(--accent);
+      font-weight: bold;
     }
 
     @media (max-width: 768px) {
-      .group-list {
-        grid-template-columns: 1fr;
-      }
-      
       .container {
-        padding: 15px;
+        padding: 1rem;
       }
       
       h1 {
@@ -290,19 +406,39 @@
       h2 {
         font-size: 1.5rem;
       }
+      
+      .form-section, .groups-section {
+        padding: 1.5rem;
+      }
+      
+      .group-list {
+        grid-template-columns: 1fr;
+      }
+      
+      .byline {
+        position: static;
+        margin-top: 1rem;
+        display: inline-block;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1><i class="fab fa-whatsapp"></i> WhatsApp Groups</h1>
-      <p class="subtitle">Connect with tech communities worldwide</p>
+      <div class="brand">
+        <div class="logo">CD</div>
+        <div>
+          <h1>WhatsApp Groups</h1>
+          <p class="subtitle">Connect with tech communities worldwide</p>
+        </div>
+      </div>
+      <span class="byline">By Calyx-Drey Hacker</span>
     </header>
 
     <main>
       <section class="form-section">
-        <h2>Add New Group</h2>
+        <h2><i class="fas fa-plus-circle"></i> Add New Group</h2>
         <form id="groupForm">
           <div class="form-group">
             <label for="username">Your Name</label>
@@ -313,20 +449,27 @@
             <input type="text" id="groupName" required placeholder="Tech Enthusiasts">
           </div>
           <div class="form-group">
-            <label for="groupLink">Group Invite Link</label>
-            <input type="url" id="groupLink" required placeholder="https://chat.whatsapp.com/..." 
+            <label for="groupLink">WhatsApp Group Link</label>
+            <input type="url" id="groupLink" required 
+                   placeholder="https://chat.whatsapp.com/..."
                    pattern="https://chat\.whatsapp\.com/.*"
                    title="Must be a WhatsApp invite link">
           </div>
           <div class="form-group">
-            <label for="imageUrl">Group Image URL (optional)</label>
-            <input type="url" id="imageUrl" placeholder="https://example.com/group-image.jpg">
+            <label>Group Image</label>
+            <label for="groupImage" class="file-upload">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Click to upload an image</p>
+              <small>JPEG or PNG, max 5MB</small>
+              <input type="file" id="groupImage" accept="image/*" class="hidden">
+            </label>
+            <img id="imagePreview" class="image-preview hidden" alt="Image preview">
           </div>
           <button type="submit" id="submitBtn">
             <span class="btn-text">Add Group</span>
             <span class="spinner hidden"><i class="fas fa-spinner"></i></span>
           </button>
-          <div id="formMessage" class="message"></div>
+          <div id="formMessage" class="message hidden"></div>
         </form>
       </section>
 
@@ -336,18 +479,25 @@
           <i class="fas fa-search"></i>
         </div>
         <div id="groupList" class="group-list">
-          <div class="empty-state">Loading groups...</div>
+          <div class="empty-state">
+            <i class="fas fa-users"></i>
+            <p>No groups found. Be the first to add one!</p>
+          </div>
         </div>
       </section>
     </main>
 
     <footer>
-      <p>WhatsApp Groups Manager &copy; <span id="currentYear"></span></p>
+      <p>WhatsApp Groups Manager &copy; <span id="currentYear"></span> | 
+         <span class="brand-footer">Calyx-Drey Hacker</span></p>
     </footer>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Set current year in footer
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+
       // DOM Elements
       const form = document.getElementById('groupForm');
       const searchInput = document.getElementById('searchInput');
@@ -355,46 +505,45 @@
       const submitBtn = document.getElementById('submitBtn');
       const spinner = document.querySelector('.spinner');
       const formMessage = document.getElementById('formMessage');
-      const currentYear = document.getElementById('currentYear');
-      
-      // Set current year in footer
-      currentYear.textContent = new Date().getFullYear();
+      const imageInput = document.getElementById('groupImage');
+      const imagePreview = document.getElementById('imagePreview');
 
-      // Initialize
-      loadGroups();
+      // Image preview handler
+      imageInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          
+          reader.onload = (event) => {
+            imagePreview.src = event.target.result;
+            imagePreview.classList.remove('hidden');
+          };
+          
+          reader.readAsDataURL(file);
+        } else {
+          imagePreview.classList.add('hidden');
+        }
+      });
 
       // Form submission handler
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         setLoading(true);
+        clearMessage();
         
-        const formData = {
-          username: document.getElementById('username').value.trim(),
-          groupName: document.getElementById('groupName').value.trim(),
-          groupLink: document.getElementById('groupLink').value.trim(),
-          imageUrl: document.getElementById('imageUrl').value.trim() || undefined
-        };
-
-        // Client-side validation
-        if (!formData.username || !formData.groupName || !formData.groupLink) {
-          showMessage('Please fill all required fields', 'error');
-          setLoading(false);
-          return;
-        }
-
-        if (!formData.groupLink.startsWith('https://chat.whatsapp.com/')) {
-          showMessage('Please enter a valid WhatsApp invite link', 'error');
-          setLoading(false);
-          return;
+        const formData = new FormData();
+        formData.append('username', document.getElementById('username').value.trim());
+        formData.append('groupName', document.getElementById('groupName').value.trim());
+        formData.append('groupLink', document.getElementById('groupLink').value.trim());
+        
+        if (imageInput.files.length > 0) {
+          formData.append('groupImage', imageInput.files[0]);
         }
 
         try {
           const response = await fetch('/api/groups', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
+            body: formData
           });
 
           const result = await response.json();
@@ -402,6 +551,7 @@
           if (response.ok) {
             showMessage('Group added successfully!', 'success');
             form.reset();
+            imagePreview.classList.add('hidden');
             loadGroups();
           } else {
             showMessage(result.error || 'Failed to add group', 'error');
@@ -415,22 +565,34 @@
       });
 
       // Search functionality with debounce
-      searchInput.addEventListener('input', debounce(() => {
-        const query = searchInput.value.trim();
-        if (query) {
-          searchGroups(query);
-        } else {
-          loadGroups();
-        }
-      }, 300));
+      let searchTimeout;
+      searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          const query = searchInput.value.trim();
+          if (query) {
+            searchGroups(query);
+          } else {
+            loadGroups();
+          }
+        }, 300);
+      });
 
       // Load all groups
       async function loadGroups() {
-        groupList.innerHTML = '<div class="empty-state">Loading groups...</div>';
+        groupList.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading groups...</p>
+          </div>
+        `;
         
         try {
           const response = await fetch('/api/groups');
-          if (!response.ok) throw new Error('Failed to load groups');
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
           
           const groups = await response.json();
           renderGroups(groups);
@@ -444,7 +606,10 @@
       async function searchGroups(query) {
         try {
           const response = await fetch(`/api/groups/search?q=${encodeURIComponent(query)}`);
-          if (!response.ok) throw new Error('Search failed');
+          
+          if (!response.ok) {
+            throw new Error('Search failed');
+          }
           
           const groups = await response.json();
           renderGroups(groups);
@@ -459,12 +624,12 @@
         if (groups.length === 0) {
           groupList.innerHTML = `
             <div class="empty-state">
-              No groups found. Be the first to add one!
-              <div class="join-link" style="margin-top: 15px; display: inline-block;">
-                <a href="#form-section" style="color: white; text-decoration: none;">
-                  Add Group
-                </a>
-              </div>
+              <i class="fas fa-users-slash"></i>
+              <p>No groups found</p>
+              <button onclick="document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' })" 
+                style="margin-top: 1rem; background: var(--accent); border: none; color: white; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer;">
+                Add First Group
+              </button>
             </div>
           `;
           return;
@@ -481,7 +646,7 @@
             </div>
             <div class="group-info">
               <h3 class="group-name">${escapeHtml(group.groupName)}</h3>
-              <p class="group-author">Added by: ${escapeHtml(group.username)}</p>
+              <p class="group-author"><i class="fas fa-user"></i> Added by: ${escapeHtml(group.username)}</p>
               <a href="${escapeHtml(group.groupLink)}" class="join-link" target="_blank" rel="noopener noreferrer">
                 Join Group <i class="fas fa-external-link-alt"></i>
               </a>
@@ -495,9 +660,10 @@
       function showErrorState(message) {
         groupList.innerHTML = `
           <div class="empty-state error">
-            ${message}
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>${message}</p>
             <button onclick="window.location.reload()" 
-                    style="margin-top: 10px; background: var(--primary); border: none; color: white; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+              style="margin-top: 1rem; background: var(--error); border: none; color: white; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer;">
               Refresh Page
             </button>
           </div>
@@ -514,28 +680,23 @@
       function showMessage(message, type) {
         formMessage.textContent = message;
         formMessage.className = `message ${type}`;
+        formMessage.classList.remove('hidden');
         formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         
         // Clear message after 5 seconds
         setTimeout(() => {
-          formMessage.textContent = '';
-          formMessage.className = 'message';
+          formMessage.classList.add('hidden');
         }, 5000);
+      }
+
+      function clearMessage() {
+        formMessage.classList.add('hidden');
       }
 
       function setLoading(isLoading) {
         submitBtn.disabled = isLoading;
         spinner.classList.toggle('hidden', !isLoading);
         document.querySelector('.btn-text').textContent = isLoading ? 'Processing...' : 'Add Group';
-      }
-
-      function debounce(func, wait) {
-        let timeout;
-        return function() {
-          const context = this, args = arguments;
-          clearTimeout(timeout);
-          timeout = setTimeout(() => func.apply(context, args), wait);
-        };
       }
     });
   </script>
