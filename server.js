@@ -4,122 +4,98 @@ const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
+const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-// Use Render's persistent storage path
-const DATA_FILE = process.env.DATA_PATH || path.join(__dirname, 'data', 'groups.json');
+const DATA_FILE = process.env.DATA_PATH || '/var/www/data/groups.json';
+const UPLOADS_DIR = process.env.UPLOADS_DIR || '/var/www/data/uploads';
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (!fs.existsSync(UPLOADS_DIR)) {
+      fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    }
+    cb(null, UPLOADS_DIR);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${uuidv4()}${ext}`);
+  }
+});
+
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
 
 // Initialize data storage
-function initDataStorage() {
-  const dataDir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-  
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, '[]', 'utf8');
-    console.log('Created new data file at:', DATA_FILE);
-  }
+function initStorage() {
+  [path.dirname(DATA_FILE), UPLOADS_DIR].forEach(dir => {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  });
+  if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, '[]');
 }
 
-initDataStorage();
+initStorage();
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/uploads', express.static(UPLOADS_DIR));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Helper functions
-function readGroups() {
-  try {
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (err) {
-    console.error('Error reading groups:', err);
-    return [];
-  }
-}
-
-function writeGroups(groups) {
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(groups, null, 2), 'utf8');
-    console.log('Data successfully written to', DATA_FILE);
-  } catch (err) {
-    console.error('Error writing groups:', err);
-    throw err;
-  }
-}
-
-function generateId() {
-  return crypto.randomBytes(8).toString('hex');
-}
+const readGroups = () => JSON.parse(fs.readFileSync(DATA_FILE));
+const writeGroups = (groups) => fs.writeFileSync(DATA_FILE, JSON.stringify(groups, null, 2));
 
 // API Endpoints
-app.get('/api/groups', (req, res) => {
+app.post('/api/groups', upload.single('groupImage'), async (req, res) => {
   try {
-    const groups = readGroups();
-    res.json(groups);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to load groups' });
-  }
-});
-
-app.post('/api/groups', (req, res) => {
-  try {
-    const { username, groupName, groupLink, imageUrl } = req.body;
+    const { username, groupName, groupLink } = req.body;
     
     if (!username || !groupName || !groupLink) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Username, group name, and group link are required' 
-      });
+      // Clean up uploaded file if validation fails
+      if (req.file) fs.unlinkSync(path.join(UPLOADS_DIR, req.file.filename));
+      return res.status(400).json({ error: 'All fields are required' });
     }
 
-    if (!groupLink.startsWith('https://chat.whatsapp.com/')) {
-      return res.status(400).json({
-        success: false,
-        error: 'Please provide a valid WhatsApp group link'
-      });
-    }
+    const imageUrl = req.file 
+      ? `/uploads/${req.file.filename}`
+      : `https://ui-avatars.com/api/?name=${encodeURIComponent(groupName)}&background=random`;
 
     const groups = readGroups();
-    const newGroup = {
-      id: generateId(),
-      username: username.trim(),
-      groupName: groupName.trim(),
-      groupLink: groupLink.trim(),
-      imageUrl: imageUrl?.trim() || `https://ui-avatars.com/api/?name=${encodeURIComponent(groupName.trim())}&background=random`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+    groups.push({
+      id: crypto.randomUUID(),
+      username,
+      groupName,
+      groupLink,
+      imageUrl,
+      createdAt: new Date().toISOString()
+    });
 
-    groups.push(newGroup);
     writeGroups(groups);
-
-    res.json({ success: true, group: newGroup });
+    res.json({ success: true });
   } catch (err) {
-    console.error('Error adding group:', err);
-    res.status(500).json({ success: false, error: 'Failed to add group' });
+    console.error('Error:', err);
+    res.status(500).json({ error: err.message || 'Server error' });
   }
 });
 
-app.get('/api/groups/search', (req, res) => {
+app.get('/api/groups', (req, res) => {
   try {
-    const query = (req.query.q || '').toLowerCase();
-    const groups = readGroups();
-
-    if (!query) return res.json(groups);
-
-    const results = groups.filter(group => 
-      group.groupName.toLowerCase().includes(query) ||
-      group.username.toLowerCase().includes(query) ||
-      group.groupLink.toLowerCase().includes(query)
-    );
-
-    res.json(results);
+    res.json(readGroups());
   } catch (err) {
-    res.status(500).json({ error: 'Search failed' });
+    res.status(500).json({ error: 'Failed to load groups' });
   }
 });
 
@@ -128,14 +104,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Server error:', err);
-  res.status(500).json({ error: 'Internal server error' });
-});
-
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Data storage: ${DATA_FILE}`);
+  console.log(`Data file: ${DATA_FILE}`);
+  console.log(`Uploads dir: ${UPLOADS_DIR}`);
 });
