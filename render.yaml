@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: whatsapp-groups-manager
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    env: node
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATA_PATH
+        value: /var/www/data/groups.json
+    disk:
+      name: data
+      mountPath: /var/www/data
+      sizeGB: 1

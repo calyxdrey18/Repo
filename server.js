@@ -1,21 +1,29 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_FILE = path.join(__dirname, 'data', 'groups.json');
+// Use Render's persistent storage path
+const DATA_FILE = process.env.DATA_PATH || path.join(__dirname, 'data', 'groups.json');
 
-// Create directories if they don't exist
-if (!fs.existsSync(path.join(__dirname, 'data'))) {
-  fs.mkdirSync(path.join(__dirname, 'data'));
+// Initialize data storage
+function initDataStorage() {
+  const dataDir = path.dirname(DATA_FILE);
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+  
+  if (!fs.existsSync(DATA_FILE)) {
+    fs.writeFileSync(DATA_FILE, '[]', 'utf8');
+    console.log('Created new data file at:', DATA_FILE);
+  }
 }
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, '[]', 'utf8');
-}
+
+initDataStorage();
 
 // Middleware
 app.use(cors());
@@ -23,73 +31,96 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Helper functions
-function md5(str) {
-  return crypto.createHash('md5').update(str).digest('hex');
-}
-
-function loadGroups() {
+function readGroups() {
   try {
     const data = fs.readFileSync(DATA_FILE, 'utf8');
     return JSON.parse(data);
   } catch (err) {
-    console.error('Error loading groups:', err);
+    console.error('Error reading groups:', err);
     return [];
   }
 }
 
-function saveGroups(groups) {
+function writeGroups(groups) {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(groups, null, 2), 'utf8');
+    console.log('Data successfully written to', DATA_FILE);
   } catch (err) {
-    console.error('Error saving groups:', err);
+    console.error('Error writing groups:', err);
+    throw err;
   }
 }
 
-// API Routes
+function generateId() {
+  return crypto.randomBytes(8).toString('hex');
+}
+
+// API Endpoints
 app.get('/api/groups', (req, res) => {
-  const groups = loadGroups();
-  res.json(groups);
+  try {
+    const groups = readGroups();
+    res.json(groups);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to load groups' });
+  }
 });
 
 app.post('/api/groups', (req, res) => {
-  const { username, groupName, groupLink, imagePath } = req.body;
-  
-  if (!username || !groupName || !groupLink) {
-    return res.status(400).json({ 
-      success: false, 
-      error: 'Username, group name, and group link are required' 
-    });
-  }
+  try {
+    const { username, groupName, groupLink, imageUrl } = req.body;
+    
+    if (!username || !groupName || !groupLink) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Username, group name, and group link are required' 
+      });
+    }
 
-  const groups = loadGroups();
-  const newGroup = {
-    id: crypto.randomUUID(),
-    username: username.trim(),
-    groupName: groupName.trim(),
-    groupLink: groupLink.trim(),
-    imagePath: imagePath || `https://www.gravatar.com/avatar/${md5(groupName.trim())}?d=identicon&s=200`,
-    createdAt: new Date().toISOString()
-  };
-  
-  groups.push(newGroup);
-  saveGroups(groups);
-  
-  res.json({ success: true, group: newGroup });
+    if (!groupLink.startsWith('https://chat.whatsapp.com/')) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide a valid WhatsApp group link'
+      });
+    }
+
+    const groups = readGroups();
+    const newGroup = {
+      id: generateId(),
+      username: username.trim(),
+      groupName: groupName.trim(),
+      groupLink: groupLink.trim(),
+      imageUrl: imageUrl?.trim() || `https://ui-avatars.com/api/?name=${encodeURIComponent(groupName.trim())}&background=random`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    groups.push(newGroup);
+    writeGroups(groups);
+
+    res.json({ success: true, group: newGroup });
+  } catch (err) {
+    console.error('Error adding group:', err);
+    res.status(500).json({ success: false, error: 'Failed to add group' });
+  }
 });
 
 app.get('/api/groups/search', (req, res) => {
-  const query = (req.query.q || '').toLowerCase().trim();
-  const groups = loadGroups();
-  
-  if (!query) return res.json(groups);
-  
-  const filtered = groups.filter(group => 
-    group.groupName.toLowerCase().includes(query) ||
-    group.username.toLowerCase().includes(query) ||
-    group.groupLink.toLowerCase().includes(query)
-  );
-  
-  res.json(filtered);
+  try {
+    const query = (req.query.q || '').toLowerCase();
+    const groups = readGroups();
+
+    if (!query) return res.json(groups);
+
+    const results = groups.filter(group => 
+      group.groupName.toLowerCase().includes(query) ||
+      group.username.toLowerCase().includes(query) ||
+      group.groupLink.toLowerCase().includes(query)
+    );
+
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ error: 'Search failed' });
+  }
 });
 
 // Serve frontend
@@ -97,7 +128,14 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Data storage: ${DATA_FILE}`);
 });
