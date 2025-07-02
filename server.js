@@ -38,6 +38,9 @@ const upload = multer({
     } else {
       cb(new Error('Only image files are allowed!'), false);
     }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
   }
 });
 
@@ -45,6 +48,11 @@ const upload = multer({
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve the frontend HTML
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Helper functions
 function loadGroups() {
@@ -73,7 +81,16 @@ function saveGroups(groups) {
 // API Endpoints
 app.get('/api/groups', (req, res) => {
   try {
-    const groups = loadGroups();
+    let groups = loadGroups();
+    const query = (req.query.q || '').toLowerCase();
+    
+    if (query) {
+      groups = groups.filter(group => 
+        group.groupName.toLowerCase().includes(query) ||
+        group.username.toLowerCase().includes(query) ||
+        (group.groupLink && group.groupLink.toLowerCase().includes(query))
+    }
+    
     res.json(groups);
   } catch (err) {
     res.status(500).json({ error: 'Failed to load groups' });
@@ -85,7 +102,6 @@ app.post('/api/groups', upload.single('groupImage'), async (req, res) => {
     const { username, groupName, groupLink } = req.body;
     
     if (!username || !groupName || !groupLink) {
-      // Delete uploaded file if validation fails
       if (req.file) fs.unlinkSync(path.join(UPLOADS_DIR, req.file.filename));
       return res.status(400).json({ error: 'All fields are required' });
     }
@@ -108,7 +124,7 @@ app.post('/api/groups', upload.single('groupImage'), async (req, res) => {
     groups.push(newGroup);
     saveGroups(groups);
     
-    res.json({ success: true, group: newGroup });
+    res.status(201).json({ success: true, group: newGroup });
   } catch (err) {
     console.error('Error saving group:', err);
     if (req.file) fs.unlinkSync(path.join(UPLOADS_DIR, req.file.filename));
@@ -116,32 +132,16 @@ app.post('/api/groups', upload.single('groupImage'), async (req, res) => {
   }
 });
 
-app.get('/api/groups/search', (req, res) => {
-  try {
-    const query = (req.query.q || '').toLowerCase();
-    const groups = loadGroups();
-    
-    const filtered = query 
-      ? groups.filter(group => 
-          group.groupName.toLowerCase().includes(query) ||
-          group.username.toLowerCase().includes(query) ||
-          (group.groupLink && group.groupLink.toLowerCase().includes(query))
-      : groups;
-    
-    res.json(filtered);
-  } catch (err) {
-    res.status(500).json({ error: 'Search failed' });
-  }
-});
-
-// Serve frontend
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 // Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
+  
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ error: err.message });
+  } else if (err) {
+    return res.status(500).json({ error: err.message });
+  }
+  
   res.status(500).send('Something broke!');
 });
 
