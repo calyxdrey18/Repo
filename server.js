@@ -1,111 +1,110 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const cors = require('cors');
-const bodyParser = require('body-parser');
 const crypto = require('crypto');
-const multer = require('multer');
-const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_FILE = process.env.DATA_PATH || '/var/www/data/groups.json';
-const UPLOADS_DIR = process.env.UPLOADS_DIR || '/var/www/data/uploads';
+const DATA_FILE = path.resolve(__dirname, 'data', 'groups.json');
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if (!fs.existsSync(UPLOADS_DIR)) {
-      fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-    }
-    cb(null, UPLOADS_DIR);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `${uuidv4()}${ext}`);
+// Ensure data directory exists
+const ensureDataDirectory = () => {
+  const dir = path.dirname(DATA_FILE);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true, mode: 0o755 });
   }
-});
-
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'), false);
-    }
+  if (!fs.existsSync(DATA_FILE)) {
+    fs.writeFileSync(DATA_FILE, '[]', { mode: 0o644 });
   }
-});
+};
+ensureDataDirectory();
 
-// Initialize data storage
-function initStorage() {
-  [path.dirname(DATA_FILE), UPLOADS_DIR].forEach(dir => {
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  });
-  if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, '[]');
-}
+// Enhanced CORS configuration
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type']
+}));
 
-initStorage();
-
-// Middleware
-app.use(cors());
 app.use(bodyParser.json());
-app.use('/uploads', express.static(UPLOADS_DIR));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Helper functions
-const readGroups = () => JSON.parse(fs.readFileSync(DATA_FILE));
-const writeGroups = (groups) => fs.writeFileSync(DATA_FILE, JSON.stringify(groups, null, 2));
+function md5(str) {
+  return crypto.createHash('md5').update(str).digest('hex');
+}
 
-// API Endpoints
-app.post('/api/groups', upload.single('groupImage'), async (req, res) => {
+function loadGroups() {
   try {
-    const { username, groupName, groupLink } = req.body;
-    
-    if (!username || !groupName || !groupLink) {
-      // Clean up uploaded file if validation fails
-      if (req.file) fs.unlinkSync(path.join(UPLOADS_DIR, req.file.filename));
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    const imageUrl = req.file 
-      ? `/uploads/${req.file.filename}`
-      : `https://ui-avatars.com/api/?name=${encodeURIComponent(groupName)}&background=random`;
-
-    const groups = readGroups();
-    groups.push({
-      id: crypto.randomUUID(),
-      username,
-      groupName,
-      groupLink,
-      imageUrl,
-      createdAt: new Date().toISOString()
-    });
-
-    writeGroups(groups);
-    res.json({ success: true });
+    const data = fs.readFileSync(DATA_FILE, 'utf8');
+    return JSON.parse(data);
   } catch (err) {
-    console.error('Error:', err);
-    res.status(500).json({ error: err.message || 'Server error' });
+    console.error('Error loading groups:', err);
+    return [];
   }
-});
+}
 
+function saveGroups(groups) {
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(groups, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Error saving groups:', err);
+    throw err; // Rethrow to handle in routes
+  }
+}
+
+// API Routes
 app.get('/api/groups', (req, res) => {
   try {
-    res.json(readGroups());
+    const groups = loadGroups();
+    res.json(groups);
   } catch (err) {
     res.status(500).json({ error: 'Failed to load groups' });
   }
 });
 
-// Serve frontend
+app.post('/api/groups', (req, res) => {
+  try {
+    const { username, groupName, groupLink, imagePath } = req.body;
+    
+    if (!username || !groupName || !groupLink) {
+      return res.status(400).json({ 
+        error: 'Username, group name, and group link are required' 
+      });
+    }
+
+    const groups = loadGroups();
+    const newGroup = {
+      id: crypto.randomUUID(),
+      username: username.trim(),
+      groupName: groupName.trim(),
+      groupLink: groupLink.trim(),
+      imagePath: imagePath || `https://www.gravatar.com/avatar/${md5(groupName.trim())}?d=identicon&s=200`,
+      createdAt: new Date().toISOString()
+    };
+    
+    groups.push(newGroup);
+    saveGroups(groups);
+    
+    res.json({ success: true, group: newGroup });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to save group' });
+  }
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
   console.log(`Data file: ${DATA_FILE}`);
-  console.log(`Uploads dir: ${UPLOADS_DIR}`);
 });
