@@ -3,57 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CALYX-DREY :: Hacker Network</title>
+  <title>GroupShare by Calyx-Drey Hacker</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* === HACKER THEME VARIABLES === */
     :root {
-      --matrix-green: #0aff0a;
-      --neon-purple: #bc13fe;
-      --hacker-red: #ff0038;
-      --darkest: #000000;
-      --darker: #0a0a0a;
-      --dark: #111111;
-      --glow: 0 0 10px var(--matrix-green);
-      --scanline: repeating-linear-gradient(
-        0deg,
-        rgba(0, 255, 0, 0.05),
-        rgba(0, 255, 0, 0.05) 1px,
-        transparent 1px,
-        transparent 2px
-      );
+      --primary-purple: #8a2be2;
+      --dark-purple: #4b0082;
+      --light-purple: #9370db;
+      --accent-pink: #ff69b4;
+      --dark-bg: #1a1a2e;
+      --card-bg: #16213e;
+      --text-light: #ffffff;
+      --text-muted: #cccccc;
     }
 
-    /* === CRT MONITOR EFFECTS === */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--scanline);
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0.3;
-    }
-
-    /* === GLITCH EFFECTS === */
-    @keyframes glitch {
-      0% { text-shadow: 2px 0 var(--neon-purple); }
-      20% { text-shadow: -2px 0 var(--hacker-red); }
-      40%, 100% { text-shadow: none; }
-    }
-
-    @keyframes glitch-border {
-      0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
-      25% { clip-path: polygon(0 5%, 100% 5%, 100% 95%, 0 95%); }
-      50% { clip-path: polygon(5% 0, 95% 0, 95% 100%, 5% 100%); }
-      75% { clip-path: polygon(0 0, 95% 0, 95% 95%, 0 95%); }
-      100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
-    }
-
-    /* === BASE STYLES === */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -61,61 +24,57 @@
     }
 
     body {
-      background-color: var(--darkest);
-      color: var(--matrix-green);
-      font-family: 'Courier New', monospace;
-      margin: 0;
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 20px;
-      overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 10% 20%, rgba(10, 255, 10, 0.02) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(188, 19, 254, 0.02) 0%, transparent 20%);
-      line-height: 1.6;
     }
 
-    /* === MAIN CONTAINER === */
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background-color: rgba(10, 10, 10, 0.8);
-      border: 1px solid var(--matrix-green);
-      box-shadow: 0 0 20px rgba(10, 255, 10, 0.3);
-      padding: 30px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .container::after {
-      content: "";
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      right: -10px;
-      bottom: -10px;
-      border: 1px solid var(--neon-purple);
-      pointer-events: none;
-      animation: glitch-border 4s infinite linear;
-    }
-
-    /* === TYPOGRAPHY === */
-    h1 {
-      font-size: 3rem;
+    .header {
       text-align: center;
-      margin-bottom: 0.5rem;
-      text-shadow: var(--glow);
-      animation: glitch 5s infinite;
-      letter-spacing: 2px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .brand {
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, var(--primary-purple), var(--accent-pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 5px;
+    }
+
+    .owner {
+      font-size: 1rem;
+      color: var(--light-purple);
+      margin-bottom: 15px;
+    }
+
+    .owner span {
+      font-weight: bold;
+      color: var(--accent-pink);
     }
 
     .subtitle {
-      text-align: center;
+      font-size: 1.3rem;
+      color: var(--text-muted);
       margin-bottom: 2rem;
-      color: var(--neon-purple);
-      font-size: 1.2rem;
-      text-shadow: 0 0 8px var(--neon-purple);
     }
 
-    /* === FORM ELEMENTS === */
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 30px 40px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
     form {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -124,65 +83,51 @@
     }
 
     form label {
-      display: block;
-      margin-bottom: 8px;
       font-weight: 600;
-      color: var(--matrix-green);
-      text-shadow: var(--glow);
+      font-size: 1rem;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--light-purple);
     }
 
-    form input {
+    form input[type="text"],
+    form input[type="url"] {
       width: 100%;
       padding: 14px 18px;
-      border-radius: 4px;
-      border: 1px solid var(--matrix-green);
-      background: var(--dark);
-      color: var(--matrix-green);
-      font-family: 'Courier New', monospace;
+      border-radius: 10px;
+      border: 2px solid var(--primary-purple);
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
       font-size: 1rem;
       transition: all 0.3s ease;
     }
 
-    form input:invalid {
-      border-color: var(--hacker-red);
-      box-shadow: 0 0 8px var(--hacker-red);
-    }
-
-    form input:focus {
+    form input[type="text"]:focus,
+    form input[type="url"]:focus {
+      border-color: var(--accent-pink);
+      box-shadow: 0 0 10px var(--accent-pink);
       outline: none;
-      box-shadow: 0 0 15px var(--matrix-green);
-      border-color: var(--neon-purple);
     }
 
-    /* === FILE UPLOAD === */
     .file-input-wrapper {
       grid-column: 1 / -1;
       position: relative;
-      border: 2px dashed var(--matrix-green);
-      border-radius: 4px;
+      border: 2px dashed var(--primary-purple);
+      border-radius: 10px;
       padding: 30px;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
+      color: var(--light-purple);
     }
 
     .file-input-wrapper:hover {
-      background-color: rgba(10, 255, 10, 0.1);
-      border-color: var(--neon-purple);
+      background: rgba(138, 43, 226, 0.1);
+      border-color: var(--accent-pink);
+      color: var(--accent-pink);
     }
 
-    .file-input-wrapper i {
-      color: var(--matrix-green);
-      margin-bottom: 10px;
-      font-size: 1.5rem;
-    }
-
-    .file-input-wrapper span {
-      display: block;
-      color: var(--matrix-green);
-    }
-
-    .file-input-wrapper input {
+    .file-input-wrapper input[type="file"] {
       position: absolute;
       top: 0;
       left: 0;
@@ -193,93 +138,77 @@
     }
 
     #previewImg {
-      display: none;
+      display: block;
       max-width: 150px;
       max-height: 150px;
       margin: 15px auto 0;
-      border: 1px solid var(--matrix-green);
-      box-shadow: var(--glow);
+      border-radius: 10px;
+      border: 2px solid var(--primary-purple);
     }
 
-    /* === BUTTONS === */
-    button {
+    form button {
       grid-column: 1 / -1;
       padding: 16px;
       font-size: 1.2rem;
       font-weight: 700;
-      border-radius: 4px;
+      border-radius: 10px;
       border: none;
-      background: linear-gradient(45deg, var(--dark), var(--darker));
-      color: var(--matrix-green);
+      background: linear-gradient(45deg, var(--primary-purple), var(--accent-pink));
+      color: white;
       cursor: pointer;
-      box-shadow: var(--glow);
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-      font-family: 'Courier New', monospace;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      transition: all 0.3s ease;
     }
 
-    button:hover {
-      text-shadow: 0 0 10px var(--matrix-green);
-      box-shadow: 0 0 20px var(--matrix-green);
+    form button:hover {
+      background: linear-gradient(45deg, var(--accent-pink), var(--primary-purple));
+      box-shadow: 0 0 20px var(--accent-pink);
+      transform: translateY(-3px);
     }
 
-    button::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        to bottom right,
-        transparent 45%,
-        var(--matrix-green) 50%,
-        transparent 55%
-      );
-      transform: rotate(30deg);
-      animation: shine 3s infinite;
-    }
-
-    @keyframes shine {
-      0% { transform: translateX(-100%) rotate(30deg); }
-      100% { transform: translateX(100%) rotate(30deg); }
-    }
-
-    /* === MESSAGES === */
     #formMsg {
       grid-column: 1 / -1;
-      text-align: center;
+      margin-top: 15px;
       font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
       min-height: 1.5em;
       padding: 10px;
-      border-radius: 4px;
+      border-radius: 8px;
     }
 
     #formMsg.success {
-      color: var(--matrix-green);
-      text-shadow: var(--glow);
-      border: 1px solid var(--matrix-green);
+      background: rgba(46, 213, 115, 0.2);
+      color: #2ed573;
+      border: 1px solid #2ed573;
     }
 
     #formMsg.error {
-      color: var(--hacker-red);
-      text-shadow: 0 0 8px var(--hacker-red);
-      border: 1px solid var(--hacker-red);
+      background: rgba(255, 71, 87, 0.2);
+      color: #ff4757;
+      border: 1px solid #ff4757;
     }
 
-    /* === SEARCH === */
     .search-container {
       position: relative;
       margin-bottom: 2rem;
+      width: 100%;
     }
 
     .search-container input {
       width: 100%;
       padding: 16px 50px 16px 20px;
       font-size: 1.1rem;
+      border-radius: 10px;
+      border: 2px solid var(--primary-purple);
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
+
+    .search-container input:focus {
+      border-color: var(--accent-pink);
+      box-shadow: 0 0 10px var(--accent-pink);
+      outline: none;
     }
 
     .search-container i {
@@ -287,40 +216,39 @@
       right: 20px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--matrix-green);
-      pointer-events: none;
+      color: var(--light-purple);
+      font-size: 1.3rem;
     }
 
-    /* === GROUP CARDS === */
     .groups-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 30px;
     }
 
     .group-card {
-      background: var(--dark);
-      border: 1px solid var(--matrix-green);
-      border-radius: 4px;
+      background: var(--card-bg);
+      border-radius: 15px;
       overflow: hidden;
-      box-shadow: 0 0 15px rgba(10, 255, 10, 0.2);
-      transition: all 0.3s;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      border: 1px solid var(--primary-purple);
     }
 
     .group-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 5px 25px var(--matrix-green);
-      border-color: var(--neon-purple);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      border-color: var(--accent-pink);
     }
 
     .group-img {
+      width: 100%;
       height: 180px;
-      background: var(--darker);
+      background: var(--dark-purple);
       overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      border-bottom: 1px solid var(--matrix-green);
     }
 
     .group-img img {
@@ -341,14 +269,13 @@
     .group-name {
       font-size: 1.3rem;
       font-weight: 700;
-      color: var(--matrix-green);
+      color: var(--text-light);
       margin-bottom: 10px;
-      text-shadow: var(--glow);
     }
 
     .group-user {
       font-size: 0.9rem;
-      color: var(--neon-purple);
+      color: var(--light-purple);
       margin-bottom: 15px;
       font-style: italic;
     }
@@ -356,159 +283,105 @@
     .group-link {
       display: block;
       padding: 12px;
-      background: linear-gradient(45deg, var(--dark), var(--darker));
-      border-radius: 4px;
-      border: 1px solid var(--hacker-red);
-      color: var(--hacker-red);
+      background: linear-gradient(45deg, var(--primary-purple), var(--accent-pink));
+      border-radius: 8px;
+      color: white;
       font-weight: 700;
       text-align: center;
       text-decoration: none;
-      box-shadow: 0 0 10px rgba(255, 0, 56, 0.3);
-      transition: all 0.3s;
+      transition: all 0.3s ease;
     }
 
     .group-link:hover {
-      background: linear-gradient(45deg, var(--darker), var(--dark));
-      text-shadow: 0 0 10px var(--hacker-red);
-      box-shadow: 0 0 20px var(--hacker-red);
+      background: linear-gradient(45deg, var(--accent-pink), var(--primary-purple));
+      box-shadow: 0 0 15px var(--accent-pink);
     }
 
-    /* === EMPTY STATE === */
     .empty-state {
       text-align: center;
       font-size: 1.2rem;
-      color: var(--neon-purple);
+      color: var(--text-muted);
       margin: 60px 0;
       grid-column: 1 / -1;
-      text-shadow: 0 0 8px var(--neon-purple);
     }
 
-    /* === BINARY RAIN === */
-    .binary-rain {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.1;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .binary-column {
-      position: absolute;
-      top: -50px;
-      width: 20px;
-      color: rgba(10, 255, 10, 0.8);
-      font-size: 18px;
-      font-family: monospace;
+    footer {
+      margin-top: 40px;
       text-align: center;
-      text-shadow: 0 0 5px rgba(10, 255, 10, 0.5);
-      user-select: none;
-      animation: fall linear infinite;
+      color: var(--text-muted);
+      font-size: 0.9rem;
     }
 
-    @keyframes fall {
-      0% { transform: translateY(-100vh); }
-      100% { transform: translateY(100vh); }
+    footer a {
+      color: var(--light-purple);
+      text-decoration: none;
     }
 
-    /* === RESPONSIVE DESIGN === */
+    footer a:hover {
+      color: var(--accent-pink);
+      text-decoration: underline;
+    }
+
     @media (max-width: 768px) {
       form {
         grid-template-columns: 1fr;
       }
       
       .container {
-        padding: 15px;
+        padding: 20px;
       }
       
-      h1 {
+      .brand {
         font-size: 2rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Binary Rain Background -->
-  <div class="binary-rain" id="binaryRain"></div>
+  <div class="header">
+    <div class="brand">GroupShare</div>
+    <div class="owner">Created by <span>Calyx-Drey Hacker</span></div>
+    <div class="subtitle">Connect, share, and grow with tech communities</div>
+  </div>
 
   <div class="container">
-    <h1>CALYX-DREY HACKER NETWORK</h1>
-    <p class="subtitle">// Secure Group Communication Channel //</p>
-
-    <form id="groupForm">
+    <form id="groupForm" enctype="multipart/form-data">
       <div>
-        <label for="username">Agent ID*</label>
-        <input type="text" id="username" placeholder="Your hacker alias" required minlength="3">
+        <label for="username">Your Username</label>
+        <input type="text" id="username" name="username" placeholder="Your name or handle" required>
       </div>
       <div>
-        <label for="groupName">Cell Name*</label>
-        <input type="text" id="groupName" placeholder="Operation codename" required minlength="3">
+        <label for="groupName">Group Name</label>
+        <input type="text" id="groupName" name="groupName" placeholder="Tech Talk" required>
       </div>
       <div>
-        <label for="groupLink">Secure Channel Link*</label>
-        <input type="url" id="groupLink" 
-               placeholder="https://chat.whatsapp.com/..." 
-               required
-               pattern="https://chat\.whatsapp\.com/.+">
+        <label for="groupLink">WhatsApp Group Link</label>
+        <input type="url" id="groupLink" name="groupLink" placeholder="https://chat.whatsapp.com/..." required>
       </div>
       <div class="file-input-wrapper">
-        <i class="fas fa-fingerprint"></i>
-        <span>Upload cell identifier (optional)</span>
-        <input type="file" id="groupImage" accept="image/*">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <span>Click or drag & drop to upload a photo (optional)</span>
+        <input type="file" id="groupImage" name="groupImage" accept="image/*">
       </div>
-      <img id="previewImg" alt="Cell identifier preview">
+      <img id="previewImg" alt="Group image preview">
 
-      <button type="submit">
-        <i class="fas fa-terminal"></i> ESTABLISH CONNECTION
-      </button>
+      <button type="submit">Submit</button>
       <div id="formMsg"></div>
     </form>
 
     <div class="search-container">
-      <input type="search" id="searchInput" placeholder="Scan network for cells...">
+      <input type="search" id="searchInput" placeholder="Search groups...">
       <i class="fas fa-search"></i>
     </div>
 
     <section class="groups-container" id="groupList"></section>
   </div>
 
+  <footer>
+    &copy; 2023 GroupShare | Created by <a href="#">Calyx-Drey Hacker</a>
+  </footer>
+
   <script>
-    // ===== BINARY RAIN EFFECT =====
-    const binaryRain = document.getElementById('binaryRain');
-    const chars = "01";
-    let columns = Math.floor(window.innerWidth / 20);
-    
-    function createBinaryRain() {
-      for (let i = 0; i < columns; i++) {
-        const column = document.createElement('div');
-        column.className = 'binary-column';
-        column.style.left = (i * 20) + 'px';
-        column.style.animationDuration = `${Math.random() * 5 + 3}s`;
-        column.style.animationDelay = `${Math.random() * 2}s`;
-        
-        let content = '';
-        const length = Math.floor(Math.random() * 20) + 10;
-        for (let j = 0; j < length; j++) {
-          content += chars.charAt(Math.floor(Math.random() * chars.length)) + '<br>';
-        }
-        column.innerHTML = content;
-        
-        binaryRain.appendChild(column);
-      }
-    }
-
-    // Initialize binary rain
-    createBinaryRain();
-    window.addEventListener('resize', () => {
-      binaryRain.innerHTML = '';
-      columns = Math.floor(window.innerWidth / 20);
-      createBinaryRain();
-    });
-
-    // ===== MAIN APPLICATION CODE =====
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('groupForm');
       const searchInput = document.getElementById('searchInput');
@@ -534,60 +407,85 @@
         }
       });
 
-      // Form submission handler
+      // Load groups from server
+      async function loadGroups(filter = '') {
+        groupList.innerHTML = '<p class="empty-state">Loading groups...</p>';
+        
+        try {
+          const response = await fetch(`/api/groups${filter ? '?q=' + encodeURIComponent(filter) : ''}`);
+          const groups = await response.json();
+
+          if (groups.length === 0) {
+            groupList.innerHTML = '<p class="empty-state">No groups found</p>';
+            return;
+          }
+
+          groupList.innerHTML = '';
+          groups.forEach(group => {
+            const card = document.createElement('div');
+            card.className = 'group-card';
+            card.innerHTML = `
+              <div class="group-img">
+                <img src="${group.imagePath || 'https://www.gravatar.com/avatar/default?s=200'}" alt="${group.groupName}">
+              </div>
+              <div class="group-info">
+                <div class="group-name">${group.groupName}</div>
+                <div class="group-user">Shared by: ${group.username}</div>
+                <a href="${group.groupLink}" class="group-link" target="_blank" rel="noopener noreferrer">
+                  Join Group
+                </a>
+              </div>
+            `;
+            groupList.appendChild(card);
+          });
+        } catch (error) {
+          groupList.innerHTML = '<p class="empty-state">Failed to load groups</p>';
+        }
+      }
+
+      // Form submission
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        setFormLoading(true);
+        formMsg.textContent = '';
         
         const username = document.getElementById('username').value.trim();
         const groupName = document.getElementById('groupName').value.trim();
         const groupLink = document.getElementById('groupLink').value.trim();
-        const imagePath = previewImg.src || '';
+        const imageFile = groupImageInput.files[0];
 
-        // Validate required fields
         if (!username || !groupName || !groupLink) {
-          showFormMessage('ERROR: All fields required', 'error');
-          setFormLoading(false);
+          formMsg.textContent = 'Please fill all required fields';
+          formMsg.className = 'error';
           return;
         }
 
-        // Validate WhatsApp link format
-        if (!groupLink.startsWith('https://chat.whatsapp.com/')) {
-          showFormMessage('ERROR: Invalid secure channel format', 'error');
-          setFormLoading(false);
-          return;
-        }
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('groupName', groupName);
+        formData.append('groupLink', groupLink);
+        if (imageFile) formData.append('groupImage', imageFile);
 
         try {
           const response = await fetch('/api/groups', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              username,
-              groupName,
-              groupLink,
-              imagePath
-            })
+            body: formData
           });
 
           const result = await response.json();
 
           if (response.ok) {
-            showFormMessage('CONNECTION ESTABLISHED', 'success');
+            formMsg.textContent = 'Group added successfully!';
+            formMsg.className = 'success';
             form.reset();
             previewImg.style.display = 'none';
-            groupImageInput.value = '';
             loadGroups();
           } else {
-            showFormMessage('ERROR: ' + (result.error || 'Transmission failed'), 'error');
+            formMsg.textContent = result.error || 'Failed to add group';
+            formMsg.className = 'error';
           }
         } catch (error) {
-          console.error('Network error:', error);
-          showFormMessage('ERROR: Network disruption detected', 'error');
-        } finally {
-          setFormLoading(false);
+          formMsg.textContent = 'Network error. Please try again.';
+          formMsg.className = 'error';
         }
       });
 
@@ -595,80 +493,6 @@
       searchInput.addEventListener('input', () => {
         loadGroups(searchInput.value.trim());
       });
-
-      // Load groups from server
-      async function loadGroups(searchQuery = '') {
-        groupList.innerHTML = '<p class="empty-state">SCANNING NETWORK...</p>';
-        
-        try {
-          const url = searchQuery 
-            ? `/api/groups/search?q=${encodeURIComponent(searchQuery)}`
-            : '/api/groups';
-          
-          const response = await fetch(url);
-          
-          if (!response.ok) {
-            throw new Error(`NETWORK ERROR ${response.status}`);
-          }
-          
-          const groups = await response.json();
-          renderGroups(groups);
-        } catch (error) {
-          console.error('Scan failed:', error);
-          groupList.innerHTML = '<p class="empty-state">NETWORK SCAN FAILED</p>';
-        }
-      }
-
-      // Render groups to the DOM
-      function renderGroups(groups) {
-        if (groups.length === 0) {
-          groupList.innerHTML = '<p class="empty-state">NO CELLS DETECTED</p>';
-          return;
-        }
-
-        groupList.innerHTML = '';
-        groups.forEach(group => {
-          const card = document.createElement('article');
-          card.className = 'group-card';
-          card.innerHTML = `
-            <div class="group-img">
-              <img src="${escapeHtml(group.imagePath)}" alt="${escapeHtml(group.groupName)}">
-            </div>
-            <div class="group-info">
-              <h2 class="group-name">${escapeHtml(group.groupName)}</h2>
-              <p class="group-user">Agent: ${escapeHtml(group.username)}</p>
-              <a href="${escapeHtml(group.groupLink)}" class="group-link" target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-link"></i> JOIN GROUP 
-              </a>
-            </div>
-          `;
-          groupList.appendChild(card);
-        });
-      }
-
-      // Helper functions
-      function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-      }
-
-      function showFormMessage(message, type) {
-        formMsg.textContent = message;
-        formMsg.className = type;
-      }
-
-      function setFormLoading(isLoading) {
-        if (isLoading) {
-          form.classList.add('loading');
-          form.querySelector('button').disabled = true;
-          form.querySelector('button').innerHTML = '<i class="fas fa-spinner fa-pulse"></i> ENCRYPTING TRANSMISSION...';
-        } else {
-          form.classList.remove('loading');
-          form.querySelector('button').disabled = false;
-          form.querySelector('button').innerHTML = '<i class="fas fa-terminal"></i> ESTABLISH CONNECTION';
-        }
-      }
 
       // Initial load
       loadGroups();
